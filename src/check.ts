@@ -15,10 +15,6 @@ function getPatterns(): Patterns {
 		filename: filename.map((p: string) => { return new RegExp(p); }),
 		header: header.map((p: string) => { return new RegExp(p); }),
 	};
-	console.log('using filename: ', filename);
-	console.log('using header: ', header);
-	console.log('using patterns.filename: ', patterns.filename);
-	console.log('using patterns.header: ', patterns.header);
 	return patterns;
 }
 
