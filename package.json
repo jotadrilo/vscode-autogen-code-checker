@@ -13,10 +13,10 @@
 		"onStartupFinished"
 	],
 	"main": "./out/src/extension.js",
-	"publisher": "josriolop",
+	"publisher": "vscode-publisher",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/josriolop/vscode-autogen-code-checker"
+		"url": "https://github.com/jotadrilo/vscode-autogen-code-checker"
 	},
 	"contributes": {
 		"configuration": {
