@@ -13,7 +13,7 @@
 		"onStartupFinished"
 	],
 	"main": "./out/src/extension.js",
-	"publisher": "vscode-publisher",
+	"publisher": "jotadrilo",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jotadrilo/vscode-autogen-code-checker"
@@ -29,9 +29,9 @@
 						"type": "string"
 					},
 					"default": [
-						"^(\\/\\/|#+)? Code generated( .*)? DO NOT EDIT\\.?$"
+						"generated\\..*"
 					],
-					"description": "Patterns to apply to the header of the file in order to identify if the file is auto-generated or not. Default: [`^(\\/\\/|#+)? Code generated( .*)? DO NOT EDIT\\.?$`].",
+					"description": "Patterns to apply to the name of the file in order to identify if the file is auto-generated or not. Default: [`generated\\..*`].",
 					"scope": "resource"
 				},
 				"autogencc.patterns.header": {
@@ -40,9 +40,9 @@
 						"type": "string"
 					},
 					"default": [
-						"generated\\..*"
+						"^(\\/\\/|#+) Code generated( .*)? DO NOT EDIT\\.?$"
 					],
-					"description": "Patterns to apply to the name of the file in order to identify if the file is auto-generated or not. Default: [`generated\\..*`].",
+					"description": "Patterns to apply to the header of the file in order to identify if the file is auto-generated or not. Default: [`^(\\/\\/|#+) Code generated( .*)? DO NOT EDIT\\.?$`].",
 					"scope": "resource"
 				}
 			}

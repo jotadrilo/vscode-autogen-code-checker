@@ -16,16 +16,16 @@ The default settings include common patterns to figure out if a file is auto-gen
 
 ### `autogencc.patterns.filename`
 
-Patterns to apply to the header of the file in order to identify if the file is auto-generated or not.
-
-Default:
-
-- `^(\\/\\/|#+)? Code generated( .*)? DO NOT EDIT\\.?$`
-
-### `autogencc.patterns.header`
-
 Patterns to apply to the name of the file in order to identify if the file is auto-generated or not.
 
 Default:
 
 - `generated\\..*`
+
+### `autogencc.patterns.header`
+
+Patterns to apply to the header of the file in order to identify if the file is auto-generated or not.
+
+Default:
+
+- `^(\\/\\/|#+) Code generated( .*)? DO NOT EDIT\\.?$`
