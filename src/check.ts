@@ -44,6 +44,8 @@ function isGeneratedTextDocument(d: vscode.TextDocument): boolean {
 
 export async function notifyIfGeneratedFileOnSave(e: vscode.TextDocument) {
 	if (isGeneratedTextDocument(e)) {
-		await vscode.window.showErrorMessage('This file seems to be generated. DO NOT EDIT.');
+		// We are showing the "Dismiss" item although we can't take any action
+		// (like allowing/disallowing to save the file) in response to it.
+		await vscode.window.showErrorMessage('This file seems to be generated. DO NOT EDIT.', 'Dismiss');
 	}
 }
