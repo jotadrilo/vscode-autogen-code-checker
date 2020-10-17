@@ -1,6 +1,6 @@
 {
 	"name": "vscode-autogen-code-checker",
-	"displayName": "vscode-autogen-code-checker",
+	"displayName": "Autogen Code Checker",
 	"description": "Autogen Code Checker supports verification for files including generated code.",
 	"version": "1.0.0",
 	"engines": {
