@@ -7,13 +7,13 @@ on:
 
 jobs:
   release:
-    name: create release
+    name: Create release
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: set version
+      - name: Set version
         run: |
           # Remove 'v' prefix
           GIT_TAG="${GITHUB_REF/refs\/tags\/v/}"
@@ -45,24 +45,24 @@ jobs:
             fi
           fi
 
-      - name: stamp snapshot version
+      - name: Stamp snapshot version
         if: env.SNAPSHOT == 1
         run: |
           jq --arg VER "${{ env.RELEASE_VERSION }}" '.version=$VER' package.json >/tmp/package.json
           cp /tmp/package.json ./package.json
 
-      - name: pre-publish
+      - name: Pre-publish
         run: |
           # 'npm ci' is 'npm install' for CI envs
           npm ci
           npm run vscode:prepublish
       
-      - name: package
+      - name: Package
         uses: lannonbr/vsce-action@704da577da0f27de5cdb4ae018374c2f08b5f523
         with:
           args: 'package'
 
-      - name: create release
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -73,7 +73,7 @@ jobs:
           draft: false
           prerelease: ${{ env.SNAPSHOT == 1 }}
 
-      - name: upload vsix
+      - name: Upload .vsix asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,7 +83,7 @@ jobs:
           asset_name: vscode-autogen-code-checker-${{ env.RELEASE_VERSION }}.vsix
           asset_content_type: application/zip
 
-      - name: publish
+      - name: Publish
         if: env.SNAPSHOT != 1
         uses: lannonbr/vsce-action@704da577da0f27de5cdb4ae018374c2f08b5f523
         with:
