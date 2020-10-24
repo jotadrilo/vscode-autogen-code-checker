@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    name: create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: set version
+        run: |
+          # Remove 'v' prefix
+          GIT_TAG="${GITHUB_REF/refs\/tags\/v/}"
+          if [[ ! "${GIT_TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "Invalid git tag '${GIT_TAG}'. It must match the '^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$' pattern"
+            exit 1
+          fi
+
+          # Recover 'v' prefix for the git tag
+          echo ::set-output name=git_tag::"v${GIT_TAG}"
+          echo ::set-env name=RELEASE_VERSION::"${GIT_TAG}"
+
+          # If the tag contains the '-.*' prefix, it is a development snapshot tag
+          echo ::set-output name=snapshot::0
+          echo ::set-env name=SNAPSHOT::0
+          if [[ "${GIT_TAG}" == *"-"* ]]; then
+            echo ::set-output name=snapshot::1
+            echo ::set-env name=SNAPSHOT::1
+          fi
+
+          # If it is not a snapshot tag, the package.json should match the tag.
+          # Otherwise it should be fixed by a human.
+          CURRENT_VERSION="$(jq -r '.version' package.json)"
+          if [[ "${GIT_TAG}" != "${CURRENT_VERSION}" ]]; then
+            echo "Versions in package.json and git tag do not match: '${CURRENT_VERSION}' (package.json) vs '${GIT_TAG}' (git tag)"
+            echo 'Please, fix this mismatch.'
+            exit 1
+          fi
+
+      - name: stamp snapshot version
+        if: env.SNAPSHOT == 1
+        run: |
+          jq --arg VER "${{ env.RELEASE_VERSION }}" '.version=$VER' package.json >/tmp/package.json
+          cp /tmp/package.json ./package.json
+
+      - name: pre-publish
+        run: |
+          # 'npm ci' is 'npm install' for CI envs
+          npm ci
+          npm run vscode:prepublish
+      
+      - name: package
+        uses: lannonbr/vsce-action@704da577da0f27de5cdb4ae018374c2f08b5f523
+        with:
+          args: 'package'
+
+      - name: create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          draft: false
+          prerelease: ${{ env.SNAPSHOT == 1 }}
+
+      - name: upload vsix
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./vscode-autogen-code-checker-${{ env.RELEASE_VERSION }}.vsix
+          asset_name: vscode-autogen-code-checker-${{ env.RELEASE_VERSION }}.vsix
+          asset_content_type: application/zip
+
+      - name: publish
+        if: env.SNAPSHOT != 1
+        uses: lannonbr/vsce-action@704da577da0f27de5cdb4ae018374c2f08b5f523
+        with:
+          args: "publish -p $VSCE_TOKEN"
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
