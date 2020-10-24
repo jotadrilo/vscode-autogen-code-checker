@@ -24,23 +24,25 @@ jobs:
 
           # Recover 'v' prefix for the git tag
           echo ::set-output name=git_tag::"v${GIT_TAG}"
-          echo ::set-env name=RELEASE_VERSION::"${GIT_TAG}"
+          echo "RELEASE_VERSION=${GIT_TAG}" >> $GITHUB_ENV
 
           # If the tag contains the '-.*' prefix, it is a development snapshot tag
           echo ::set-output name=snapshot::0
-          echo ::set-env name=SNAPSHOT::0
+          echo "SNAPSHOT=0" >> $GITHUB_ENV
           if [[ "${GIT_TAG}" == *"-"* ]]; then
             echo ::set-output name=snapshot::1
-            echo ::set-env name=SNAPSHOT::1
+            echo "SNAPSHOT=1" >> $GITHUB_ENV
           fi
 
           # If it is not a snapshot tag, the package.json should match the tag.
           # Otherwise it should be fixed by a human.
-          CURRENT_VERSION="$(jq -r '.version' package.json)"
-          if [[ "${GIT_TAG}" != "${CURRENT_VERSION}" ]]; then
-            echo "Versions in package.json and git tag do not match: '${CURRENT_VERSION}' (package.json) vs '${GIT_TAG}' (git tag)"
-            echo 'Please, fix this mismatch.'
-            exit 1
+          if [[ "${SNAPSHOT}" == "1" ]]; then
+            CURRENT_VERSION="$(jq -r '.version' package.json)"
+            if [[ "${GIT_TAG}" != "${CURRENT_VERSION}" ]]; then
+              echo "Versions in package.json and git tag do not match: '${CURRENT_VERSION}' (package.json) vs '${GIT_TAG}' (git tag)"
+              echo 'Please, fix this mismatch.'
+              exit 1
+            fi
           fi
 
       - name: stamp snapshot version
