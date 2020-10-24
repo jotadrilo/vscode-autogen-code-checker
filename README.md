@@ -1,5 +1,7 @@
 # Autogen Code Checker
 
+![Release](https://github.com/jotadrilo/vscode-autogen-code-checker/workflows/Release/badge.svg)
+
 This extensions provides verification for files including auto-generated code.
 
 ![save-file](./images/save-file.gif)
