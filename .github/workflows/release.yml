@@ -58,7 +58,7 @@ jobs:
           npm run vscode:prepublish
       
       - name: Package
-        uses: lannonbr/vsce-action@704da577da0f27de5cdb4ae018374c2f08b5f523
+        uses: lannonbr/vsce-action@08c559e5b8d51bf7c1e4ae83744a561b8c5870c8
         with:
           args: 'package'
 
@@ -85,7 +85,7 @@ jobs:
 
       - name: Publish
         if: env.SNAPSHOT != 1
-        uses: lannonbr/vsce-action@704da577da0f27de5cdb4ae018374c2f08b5f523
+        uses: lannonbr/vsce-action@08c559e5b8d51bf7c1e4ae83744a561b8c5870c8
         with:
           args: "publish -p $VSCE_TOKEN"
         env:
