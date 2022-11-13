@@ -1,4 +1,4 @@
-name: Verify
+name: Compile and Lint
 
 on:
   push:
@@ -22,5 +22,5 @@ jobs:
         name: Install Deps
         run: npm install -p
       -
-        name: Verify
-        run: npm test
+        name: Compile and Lint
+        run: npm run pretest
