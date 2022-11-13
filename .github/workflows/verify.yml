@@ -19,6 +19,8 @@ jobs:
         with:
           node-version: '16.x' # This must match the Node version that is built into https://www.electronjs.org/
       -
-        name: Verify
+        name: Install Deps
         run: npm install -p
+      -
+        name: Verify
         run: npm test
